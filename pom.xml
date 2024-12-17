@@ -11,8 +11,9 @@
 
   <properties>
     <vertx.version>5.0.0.CR2</vertx.version>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <grpc.version>1.65.1</grpc.version>
+    <protoc.version>4.27.2</protoc.version>
+    <protobuf.version>4.27.2</protobuf.version>
   </properties>
 
   <dependencyManagement>
@@ -30,18 +31,145 @@
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
       <artifactId>vertx-grpc-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-grpcio-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+      <version>${grpc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>${grpc.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>${grpc.version}</version>
     </dependency>
   </dependencies>
 
   <build>
+    <extensions>
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.1</version>
+      </extension>
+    </extensions>
     <plugins>
+      <plugin>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>0.6.1</version>
+        <configuration>
+          <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+          <clearOutputDirectory>false</clearOutputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile-grpc-java</id>
+            <configuration>
+              <pluginId>grpc-java</pluginId>
+              <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+              </pluginArtifact>
+              <protocPlugins>
+                <protocPlugin>
+                  <id>vertx-grpc-protoc-plugin2</id>
+                  <groupId>io.vertx</groupId>
+                  <artifactId>vertx-grpc-protoc-plugin2</artifactId>
+                  <version>${vertx.version}</version>
+                  <mainClass>io.vertx.grpc.plugin.VertxGrpcServerGenerator</mainClass>
+                </protocPlugin>
+              </protocPlugins>
+              <pluginParameter>@generated=omit</pluginParameter>
+              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile-custom</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile-js</id>
+            <configuration>
+              <javaScriptOptions>import_style=commonjs</javaScriptOptions>
+              <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile-js</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>compile-grpc-web</id>
+            <configuration>
+              <pluginId>grpc-web</pluginId>
+              <pluginParameter>import_style=commonjs,mode=grpcwebtext</pluginParameter>
+              <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>compile-custom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.mvnpm</groupId>
+        <artifactId>esbuild-maven-plugin</artifactId>
+        <version>0.0.2</version>
+        <executions>
+          <execution>
+            <id>esbuild</id>
+            <goals>
+              <goal>esbuild</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <entryPoint>index.js</entryPoint>
+          <outputDirectory>${project.build.outputDirectory}/webroot/js</outputDirectory>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.mvnpm</groupId>
+            <artifactId>grpc-web</artifactId>
+            <version>1.5.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.mvnpm</groupId>
+            <artifactId>google-protobuf</artifactId>
+            <version>3.21.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>11</release>
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
