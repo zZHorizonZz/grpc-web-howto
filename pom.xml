@@ -9,13 +9,16 @@
   <artifactId>grpc-web-howto</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <!--  tag::properties[]  -->
   <properties>
     <vertx.version>5.0.0.CR2</vertx.version>
     <grpc.version>1.65.1</grpc.version>
     <protoc.version>4.27.2</protoc.version>
     <protobuf.version>4.27.2</protobuf.version>
   </properties>
+  <!--  end::properties[]  -->
 
+  <!--  tag::dependencies[]  -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -62,16 +65,20 @@
       <version>${grpc.version}</version>
     </dependency>
   </dependencies>
+  <!--  end::dependencies[]  -->
 
   <build>
     <extensions>
+      <!--  tag::os-maven-plugin[]  -->
       <extension>
         <groupId>kr.motd.maven</groupId>
         <artifactId>os-maven-plugin</artifactId>
         <version>1.7.1</version>
       </extension>
+      <!--  end::os-maven-plugin[]  -->
     </extensions>
     <plugins>
+      <!--  tag::protobuf-maven-plugin[]  -->
       <plugin>
         <groupId>org.xolstice.maven.plugins</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
@@ -135,6 +142,8 @@
           </execution>
         </executions>
       </plugin>
+      <!--  end::protobuf-maven-plugin[]  -->
+      <!--  tag::esbuild-maven-plugin[]  -->
       <plugin>
         <groupId>io.mvnpm</groupId>
         <artifactId>esbuild-maven-plugin</artifactId>
@@ -164,6 +173,7 @@
           </dependency>
         </dependencies>
       </plugin>
+      <!--  end::esbuild-maven-plugin[]  -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

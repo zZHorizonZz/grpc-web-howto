@@ -14,8 +14,7 @@ public class ServerVerticle extends VerticleBase {
 
   @Override
   public Future<?> start() {
-    GrpcIoServer grpcServer = GrpcIoServer.server(vertx, new GrpcServerOptions().setGrpcWebEnabled(true));
-
+    // tag::grpcServer[]
     GreeterGrpc.GreeterImplBase service = new GreeterGrpc.GreeterImplBase() {
       @Override
       public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
@@ -24,20 +23,31 @@ public class ServerVerticle extends VerticleBase {
       }
     };
 
+    GrpcServerOptions grpcServerOptions = new GrpcServerOptions().setGrpcWebEnabled(true); // <2>
+    GrpcIoServer grpcServer = GrpcIoServer.server(vertx, grpcServerOptions);
     GrpcIoServiceBridge serverStub = GrpcIoServiceBridge.bridge(service);
     serverStub.bind(grpcServer);
+    // end::grpcServer[]
 
+    // tag::routerAndServer[]
     Router router = Router.router(vertx);
-    router.route().consumes("application/grpc-web-text").handler(rc -> grpcServer.handle(rc.request()));
+    router.route()
+      .consumes("application/grpc-web-text")
+      .handler(rc -> grpcServer.handle(rc.request()));
+
     router.get().handler(StaticHandler.create());
 
     return vertx.createHttpServer()
       .requestHandler(router)
       .listen(8080);
+    // end::routerAndServer[]
   }
 
+  // tag::main[]
   public static void main(String[] args) {
     Vertx vertx = Vertx.vertx();
     vertx.deployVerticle(new ServerVerticle()).await();
+    System.out.println("Server started, browse to http://localhost:8080");
   }
+  // end::main[]
 }

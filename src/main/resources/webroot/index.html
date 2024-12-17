@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Echo Example</title>
-  <script type="module" src="/js/index.js"></script>
+  <script type="module">
+    import {sayHello} from "/js/index.js";
+
+    window.sayHello = sayHello;
+  </script>
 </head>
 <body>
 <div>
-  <p>Type a name in the input field and click the send button.</p>
+  <p>Type a name in the input field and press enter, or click the send button.</p>
   <div class="input-group">
-    <input type="text" id="name">
-    <button type="button" id="send">Send</button>
+    <!--    Invoke javascript function on submit  -->
+    <form onsubmit="return sayHello();">
+      <input type="text" id="name">
+      <input type="submit" value="Send">
+    </form>
   </div>
   <p id="msg"></p>
 </div>
