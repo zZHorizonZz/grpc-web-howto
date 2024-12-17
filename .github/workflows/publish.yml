@@ -23,8 +23,6 @@ jobs:
           java-version: '17'
       - name: Run builds
         run: |
-          mkdir --parents "$HOME/.local/bin"
-          ls -lrta "$HOME/.local/bin"
           curl -sL https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.tar.gz | tar xzfO - bin/protoc-gen-js > "$HOME/.local/bin/protoc-gen-js"
           chmod u+x "$HOME/.local/bin/protoc-gen-js"
           curl -sL https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-x86_64 > "$HOME/.local/bin/protoc-gen-grpc-web"
