@@ -64,7 +64,7 @@ ifdef::env-github[]
 link:src/main/proto/service.proto[`service.proto` file]
 endif::env-github[]
 ifndef::env-github[]
-[source,xml]
+[source,protobuf]
 .`service.proto` file
 ----
 include::src/main/proto/service.proto[]
