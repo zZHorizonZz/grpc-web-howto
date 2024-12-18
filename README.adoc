@@ -37,7 +37,7 @@ The `protoc` Javascript and gRPC Web plugin files must be installed somewhere on
 
 [TIP]
 ====
-On several Linux-like systems, you can install the plugins like this:
+On several Linux systems, you can install the plugins like this:
 
 [source,shell]
 ----
