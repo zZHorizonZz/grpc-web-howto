@@ -97,6 +97,19 @@ endif::env-github[]
 
 === The server side
 
+We need some dependencies for the project to compile:
+
+ifdef::env-github[]
+link:pom.xml[Maven POM file]
+endif::env-github[]
+ifndef::env-github[]
+[source,xml]
+.Project dependencies
+----
+include::pom.xml[tags="dependencies",indent=0]
+----
+endif::env-github[]
+
 The server side code fits in a single `ServerVerticle` class.
 
 First, the gRPC server stub implementation.
