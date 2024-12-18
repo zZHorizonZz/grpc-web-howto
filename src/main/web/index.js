@@ -1,14 +1,13 @@
-// Import HelloRequest object from JS generated file
-const {HelloRequest} = require("./service_pb");
-// Import GreeterClient object from gRPC Web (JS) generated file
-const {GreeterClient} = require("./service_grpc_web_pb");
+const {HelloRequest} = require("./service_pb"); // <1>
+const {GreeterClient} = require("./service_grpc_web_pb"); // <2>
 
-// Configure to client to send requests to the web server
-const greeterClient = new GreeterClient("http://" + window.location.hostname + ":8080", null, null);
+const greeterClient = new GreeterClient("http://" + window.location.hostname + ":8080", null, null); // <3>
 
 export function sayHello() {
+
   const request = new HelloRequest();
   request.setName(document.getElementById("name").value);
+
   greeterClient.sayHello(request, {}, (err, response) => {
     const msgElem = document.getElementById("msg");
     if (err) {
@@ -17,5 +16,6 @@ export function sayHello() {
       msgElem.innerText = response.getMessage();
     }
   });
+
   return false; // prevent form posting
 }

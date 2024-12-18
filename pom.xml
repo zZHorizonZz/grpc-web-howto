@@ -118,7 +118,7 @@
           <execution>
             <id>compile-js</id>
             <configuration>
-              <javaScriptOptions>import_style=commonjs</javaScriptOptions>  <!--2-->
+              <javaScriptOptions>import_style=commonjs</javaScriptOptions> <!--2-->
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
             </configuration>
             <goals>
@@ -154,7 +154,7 @@
         </executions>
         <configuration>
           <entryPoint>index.js</entryPoint>
-          <outputDirectory>${project.build.outputDirectory}/webroot/js</outputDirectory>
+          <outputDirectory>${project.build.outputDirectory}/webroot/js</outputDirectory> <!--1-->
         </configuration>
         <dependencies>
           <dependency>

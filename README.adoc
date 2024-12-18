@@ -144,3 +144,60 @@ include::src/main/java/io/vertx/howtos/grpcweb/ServerVerticle.java[tags="routerA
 <1> All requests with `application/grpc-web-text` content type will be handed over to the `grpcServer`.
 <2> All other `GET` requests will be handled by a Vert.x Web `StaticHandler`.
 endif::env-github[]
+
+=== The client side
+
+Before writing code, we must set up the project to build client side code.
+For simplicity, we choose to use the https://github.com/mvnpm/esbuild-maven-plugin[`esbuild-maven-plugin`].
+In a few words, it's a Maven plugin that wraps https://esbuild.github.io/[`esbuild`], a fast bundler for the web.
+
+A couple of dependencies are required, which we grab as Maven dependencies thanks to https://mvnpm.org/[`mvnpm`]:
+
+* https://www.npmjs.com/package/google-protobuf/v/3.21.4[`google-protobuf`]
+* https://www.npmjs.com/package/grpc-web/v/1.5.0[`grpc-web`]
+
+ifdef::env-github[]
+link:pom.xml[Maven POM file]
+endif::env-github[]
+ifndef::env-github[]
+[source,xml]
+.Client code build with `esbuild-maven-plugin`
+----
+include::pom.xml[tags="esbuild-maven-plugin",indent=0]
+----
+
+<1> `webroot` is the default base directory from where the Vert.x Web `StaticHandler` serves static files.
+endif::env-github[]
+
+The user interface code fits in a single `index.html` file.
+
+ifdef::env-github[]
+link:src/main/resources/webroot/index.html[HTML file]
+endif::env-github[]
+ifndef::env-github[]
+[source,html]
+.User interface
+----
+include::src/main/resources/webroot/index.html[indent=0]
+----
+
+<1> Import the `sayHello` function from our Javascript module (see below).
+<2> Make the `sayHello` function global.
+endif::env-github[]
+
+Last but not least, let's implement the `sayHello` function:
+
+ifdef::env-github[]
+link:src/main/web/index.js[Application JS file]
+endif::env-github[]
+ifndef::env-github[]
+[source,javascript]
+.Using the gRPC Web client
+----
+include::src/main/web/index.js[indent=0]
+----
+
+<1> Import the `HelloRequest` object from the Javascript generated file.
+<2> Import the `GreeterClient` object from gRPC Web (Javascript) generated file.
+<3> Configure the client to send requests to the web server.
+endif::env-github[]
