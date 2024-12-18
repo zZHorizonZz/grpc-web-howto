@@ -201,3 +201,36 @@ include::src/main/web/index.js[indent=0]
 <2> Import the `GreeterClient` object from gRPC Web (Javascript) generated file.
 <3> Configure the client to send requests to the web server.
 endif::env-github[]
+
+== Running the application
+
+You can run the application with Maven:
+
+[source,shell]
+----
+./mvnw compile exec:java
+----
+
+You should see:
+
+----
+Server started, browse to http://localhost:8080
+----
+
+You can now browse to http://localhost:8080 and follow the instructions.
+
+Use the dev tools of your browser to inspect the gRPC Web traffic.
+
+image::devtools.png[]
+
+== Summary
+
+This document covered:
+
+. implementing a Vert.x web server that replies to both static file and gRPC Web requests,
+. creating a web page that uses the gRPC Web client.
+
+== See also
+
+* https://vertx.io/docs/vertx-grpc/java/[Vert.x gRPC documentation]
+* https://github.com/grpc/grpc-web[gRPC Web project]
