@@ -9,14 +9,12 @@
   <artifactId>grpc-web-howto</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <!--  tag::properties[]  -->
   <properties>
     <vertx.version>5.0.0.CR2</vertx.version>
     <grpc.version>1.65.1</grpc.version>
     <protoc.version>4.27.2</protoc.version>
     <protobuf.version>4.27.2</protobuf.version>
   </properties>
-  <!--  end::properties[]  -->
 
   <!--  tag::dependencies[]  -->
   <dependencyManagement>
@@ -69,13 +67,11 @@
 
   <build>
     <extensions>
-      <!--  tag::os-maven-plugin[]  -->
       <extension>
         <groupId>kr.motd.maven</groupId>
         <artifactId>os-maven-plugin</artifactId>
         <version>1.7.1</version>
       </extension>
-      <!--  end::os-maven-plugin[]  -->
     </extensions>
     <plugins>
       <!--  tag::protobuf-maven-plugin[]  -->
@@ -84,7 +80,7 @@
         <artifactId>protobuf-maven-plugin</artifactId>
         <version>0.6.1</version>
         <configuration>
-          <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+          <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact> <!--1-->
           <clearOutputDirectory>false</clearOutputDirectory>
         </configuration>
         <executions>
@@ -122,7 +118,7 @@
           <execution>
             <id>compile-js</id>
             <configuration>
-              <javaScriptOptions>import_style=commonjs</javaScriptOptions>
+              <javaScriptOptions>import_style=commonjs</javaScriptOptions>  <!--2-->
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
             </configuration>
             <goals>

@@ -70,3 +70,26 @@ ifndef::env-github[]
 include::src/main/proto/service.proto[]
 ----
 endif::env-github[]
+
+=== Code generation
+
+From the service definition, several files must be generated:
+
+* Java message and server classes
+* Javascript files
+* gRPC Web specific (Javascript) files.
+
+The `protoc` invocation is managed with the https://github.com/xolstice/protobuf-maven-plugin[`protobuf-maven-plugin`].
+
+ifdef::env-github[]
+link:pom.xml[Maven POM file]
+endif::env-github[]
+ifndef::env-github[]
+[source,xml]
+.Code generation with `protobuf-maven-plugin`
+----
+include::pom.xml[tags="protobuf-maven-plugin",indent=0]
+----
+<1> Properties prefixed `os.detected` are computed with the https://github.com/trustin/os-maven-plugin[os-maven-plugin] extension.
+<2> We choose to use the `CommonJS` modules generation style instead of closures.
+endif::env-github[]
