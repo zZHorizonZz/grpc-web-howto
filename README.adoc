@@ -6,23 +6,51 @@ ifdef::env-github[]
 image:https://github.com/vertx-howtos/grpc-web-howto/workflows/Publish%20the%20how-to/badge.svg["Build Status",link="https://github.com/vertx-howtos/grpc-web-howto/actions?query=workflow%3A%22Publish+the+how-to%22"]
 endif::env-github[]
 
-This document will show you how to build a https://github.com/grpc/grpc-web[gRPC Web] service with Vert.x.
+This document will show you how to build a browser/server application with Vert.x and https://github.com/grpc/grpc-web[gRPC Web].
 
 == What you will build
 
-You will build a gRPC _Greeter_ client/server application, using the gRPC Web protocol.
+The application involves a client, the browser, and a Vert.x server:
 
-On the server side, you will implement a Vert.x gRPC server service that:
+* the user types a name in a text field and clicks the send button
+* the browser sends the name to the server using the gRPC Web protocol
+* the server replies with a greeting
+* the browser displays the greeting
+
+On the server side, you will create a Vert.x gRPC server service that:
 
 * implements a gRPC server stub
 * configures an HTTP server replying to both gRPC Web and static file requests
 
-On the client side, you will create a browser page that uses the gRPC Web Javascript client.
+On the client side, you will create a web page that uses the gRPC Web Javascript client.
+
+image::run.png[]
 
 == What you need
 
 * A text editor or an IDE
 * Java 17 or higher
+* The https://github.com/protocolbuffers/protobuf-javascript/releases/tag/v3.21.4[`protoc` Javascript] plugin
+* The https://github.com/grpc/grpc-web/releases/tag/1.5.0[`protoc` gRPC Web] plugin
+
+The `protoc` Javascript and gRPC Web plugin files must be installed somewhere on your `PATH` and be executable.
+
+[TIP]
+====
+On several Linux-like systems, you can install the plugins like this:
+
+[source,shell]
+----
+mkdir --parents "$HOME/.local/bin"
+curl -sL https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.tar.gz | tar xzfO - bin/protoc-gen-js > "$HOME/.local/bin/protoc-gen-js"
+chmod u+x "$HOME/.local/bin/protoc-gen-js"
+curl -sL https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-x86_64 > "$HOME/.local/bin/protoc-gen-grpc-web"
+chmod u+x "$HOME/.local/bin/protoc-gen-grpc-web"
+----
+====
+
+You don't have to install `protoc` or the Java plugin.
+They will be managed by a Maven plugin.
 
 == Create the project
 
