@@ -99,7 +99,7 @@ public final class GreeterGrpc {
 
     /**
      * <pre>
-     * Sends a greeting
+     * Ask for a greeting
      * </pre>
      */
     default void sayHello(io.vertx.howtos.grpcweb.HelloRequest request,
@@ -143,7 +143,7 @@ public final class GreeterGrpc {
 
     /**
      * <pre>
-     * Sends a greeting
+     * Ask for a greeting
      * </pre>
      */
     public void sayHello(io.vertx.howtos.grpcweb.HelloRequest request,
@@ -174,7 +174,7 @@ public final class GreeterGrpc {
 
     /**
      * <pre>
-     * Sends a greeting
+     * Ask for a greeting
      * </pre>
      */
     public io.vertx.howtos.grpcweb.HelloReply sayHello(io.vertx.howtos.grpcweb.HelloRequest request) {
@@ -204,7 +204,7 @@ public final class GreeterGrpc {
 
     /**
      * <pre>
-     * Sends a greeting
+     * Ask for a greeting
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.vertx.howtos.grpcweb.HelloReply> sayHello(

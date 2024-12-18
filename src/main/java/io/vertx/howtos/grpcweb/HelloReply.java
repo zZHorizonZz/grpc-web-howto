@@ -7,7 +7,7 @@ package io.vertx.howtos.grpcweb;
 
 /**
  * <pre>
- * The response message containing the greetings
+ * The response message containing the greeting
  * </pre>
  *
  * Protobuf type {@code helloworld.HelloReply}
@@ -244,7 +244,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The response message containing the greetings
+   * The response message containing the greeting
    * </pre>
    *
    * Protobuf type {@code helloworld.HelloReply}
