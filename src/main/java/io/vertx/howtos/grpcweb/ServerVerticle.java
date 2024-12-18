@@ -6,7 +6,6 @@ import io.vertx.core.VerticleBase;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.grpc.server.GrpcServerOptions;
 import io.vertx.grpcio.server.GrpcIoServer;
 import io.vertx.grpcio.server.GrpcIoServiceBridge;
 
@@ -23,8 +22,7 @@ public class ServerVerticle extends VerticleBase {
       }
     };
 
-    GrpcServerOptions grpcServerOptions = new GrpcServerOptions().setGrpcWebEnabled(true); // <2>
-    GrpcIoServer grpcServer = GrpcIoServer.server(vertx, grpcServerOptions);
+    GrpcIoServer grpcServer = GrpcIoServer.server(vertx);
     GrpcIoServiceBridge serverStub = GrpcIoServiceBridge.bridge(service);
     serverStub.bind(grpcServer);
     // end::grpcServer[]
@@ -32,10 +30,10 @@ public class ServerVerticle extends VerticleBase {
     // tag::routerAndServer[]
     Router router = Router.router(vertx);
     router.route()
-      .consumes("application/grpc-web-text")
+      .consumes("application/grpc-web-text") // <1>
       .handler(rc -> grpcServer.handle(rc.request()));
 
-    router.get().handler(StaticHandler.create());
+    router.get().handler(StaticHandler.create()); // <2>
 
     return vertx.createHttpServer()
       .requestHandler(router)
