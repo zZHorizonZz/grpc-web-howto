@@ -127,7 +127,7 @@ endif::env-github[]
 
 There is nothing specific to gRPC Web here.
 
-NOTE: `GrpcIoServer` enables the gRPC Web protocol support by default.
+NOTE: `GrpcServer` enables the gRPC Web protocol support by default.
 
 Then we have to configure a Vert.x Web `Router` to accept both gRPC Web and static file requests.
 
