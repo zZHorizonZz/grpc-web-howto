@@ -1,30 +1,26 @@
 package io.vertx.howtos.grpcweb;
 
-import io.grpc.stub.StreamObserver;
 import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.grpcio.server.GrpcIoServer;
-import io.vertx.grpcio.server.GrpcIoServiceBridge;
+import io.vertx.grpc.server.GrpcServer;
 
 public class ServerVerticle extends VerticleBase {
 
   @Override
   public Future<?> start() {
     // tag::grpcServer[]
-    GreeterGrpc.GreeterImplBase service = new GreeterGrpc.GreeterImplBase() {
+    VertxGreeterGrpcServer.GreeterApi stub = new VertxGreeterGrpcServer.GreeterApi() {
       @Override
-      public void sayHello(HelloRequest request, StreamObserver<HelloReply> responseObserver) {
-        responseObserver.onNext(HelloReply.newBuilder().setMessage("Hello " + request.getName()).build());
-        responseObserver.onCompleted();
+      public Future<HelloReply> sayHello(HelloRequest request) {
+        return Future.succeededFuture(HelloReply.newBuilder().setMessage("Hello " + request.getName()).build());
       }
     };
 
-    GrpcIoServer grpcServer = GrpcIoServer.server(vertx);
-    GrpcIoServiceBridge serverStub = GrpcIoServiceBridge.bridge(service);
-    serverStub.bind(grpcServer);
+    GrpcServer grpcServer = GrpcServer.server(vertx);
+    stub.bindAll(grpcServer);
     // end::grpcServer[]
 
     // tag::routerAndServer[]
