@@ -12,7 +12,7 @@ public class ServerVerticle extends VerticleBase {
   @Override
   public Future<?> start() {
     // tag::grpcServer[]
-    VertxGreeterGrpcServer.GreeterApi stub = new VertxGreeterGrpcServer.GreeterApi() {
+    VertxGreeterGrpcService service = new VertxGreeterGrpcService() {
       @Override
       public Future<HelloReply> sayHello(HelloRequest request) {
         return Future.succeededFuture(HelloReply.newBuilder().setMessage("Hello " + request.getName()).build());
@@ -20,7 +20,7 @@ public class ServerVerticle extends VerticleBase {
     };
 
     GrpcServer grpcServer = GrpcServer.server(vertx);
-    stub.bindAll(grpcServer);
+    grpcServer.addService(service);
     // end::grpcServer[]
 
     // tag::routerAndServer[]

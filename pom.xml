@@ -10,10 +10,10 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <vertx.version>5.0.0.CR2</vertx.version>
+    <vertx.version>5.0.0.CR8</vertx.version>
     <grpc.version>1.65.1</grpc.version>
-    <protoc.version>4.27.2</protoc.version>
-    <protobuf.version>4.27.2</protobuf.version>
+    <protoc.version>4.29.3</protoc.version>
+    <protobuf.version>4.29.3</protobuf.version>
   </properties>
 
   <!--  tag::dependencies[]  -->
@@ -38,6 +38,12 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-grpc-server</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
@@ -72,56 +78,66 @@
     <plugins>
       <!--  tag::protobuf-maven-plugin[]  -->
       <plugin>
-        <groupId>org.xolstice.maven.plugins</groupId>
+        <groupId>io.github.ascopes</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
-        <version>0.6.1</version>
+        <version>2.13.1</version>
         <configuration>
-          <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact> <!--1-->
-          <clearOutputDirectory>false</clearOutputDirectory>
+          <protocVersion>4.29.3</protocVersion>
+          <sourceDirectories>src/main/proto</sourceDirectories>
+          <javaEnabled>false</javaEnabled>
         </configuration>
         <executions>
           <execution>
             <id>compile-java</id>
             <configuration>
-              <pluginId>grpc-java</pluginId>
-              <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
-              </pluginArtifact>
-              <protocPlugins>
-                <protocPlugin>
-                  <id>vertx-grpc-protoc-plugin2</id>
+              <javaEnabled>true</javaEnabled>
+              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+              <jvmMavenPlugins>
+                <jvmMavenPlugin>
                   <groupId>io.vertx</groupId>
                   <artifactId>vertx-grpc-protoc-plugin2</artifactId>
                   <version>${vertx.version}</version>
-                  <mainClass>io.vertx.grpc.plugin.VertxGrpcServerGenerator</mainClass>
-                </protocPlugin>
-              </protocPlugins>
-              <pluginParameter>@generated=omit</pluginParameter>
-              <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+                  <mainClass>io.vertx.grpc.plugin.VertxGrpcGenerator</mainClass>
+                  <jvmArgs>
+                    <jvmArg>--grpc-client=false</jvmArg>
+                    <jvmArg>--grpc-service</jvmArg>
+                    <jvmArg>--service-prefix=Vertx</jvmArg>
+                  </jvmArgs>
+                </jvmMavenPlugin>
+              </jvmMavenPlugins>
             </configuration>
             <goals>
-              <goal>compile</goal>
-              <goal>compile-custom</goal>
+              <goal>generate</goal>
             </goals>
           </execution>
           <execution>
-            <id>compile-js</id>
+            <id>compile-javascript</id>
             <configuration>
-              <javaScriptOptions>import_style=commonjs</javaScriptOptions> <!--2-->
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
+              <binaryPathPlugins>
+                <binaryPathPlugin>
+                  <name>protoc-gen-js</name>
+                  <options>import_style=commonjs</options>
+                </binaryPathPlugin>
+              </binaryPathPlugins>
             </configuration>
             <goals>
-              <goal>compile-js</goal>
+              <goal>generate</goal>
             </goals>
           </execution>
           <execution>
-            <id>compile-grpc-web</id>
+            <id>compile-javascript-web</id>
             <configuration>
-              <pluginId>grpc-web</pluginId>
-              <pluginParameter>import_style=commonjs,mode=grpcwebtext</pluginParameter>
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
+              <binaryPathPlugins>
+                <binaryPathPlugin>
+                  <name>protoc-gen-grpc-web</name>
+                  <options>import_style=commonjs,mode=grpcwebtext</options>
+                </binaryPathPlugin>
+              </binaryPathPlugins>
             </configuration>
             <goals>
-              <goal>compile-custom</goal>
+              <goal>generate</goal>
             </goals>
           </execution>
         </executions>
