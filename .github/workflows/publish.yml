@@ -56,12 +56,7 @@ jobs:
           ruby-version: '3.2.1'
 
       - name: Install Jekyll dependencies
-        run: |
-          echo "⚙️  Building with Jekyll"
-          gem install bundler
-          bundle install
-          bundle exec jekyll build
-          echo "✅ Done"
+        run: ./.run.jekyll.sh
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v3
