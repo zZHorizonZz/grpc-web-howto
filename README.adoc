@@ -31,22 +31,6 @@ image::run.png[]
 * A text editor or an IDE
 * Java 17 or higher
 
-The `protoc` Javascript and gRPC Web plugin files must be installed somewhere on your `PATH` and be executable.
-
-[TIP]
-====
-On several Linux systems, you can install the plugins like this:
-
-[source,shell]
-----
-mkdir --parents "$HOME/.local/bin"
-curl -sL https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.tar.gz | tar xzfO - bin/protoc-gen-js > "$HOME/.local/bin/protoc-gen-js"
-chmod u+x "$HOME/.local/bin/protoc-gen-js"
-curl -sL https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-x86_64 > "$HOME/.local/bin/protoc-gen-grpc-web"
-chmod u+x "$HOME/.local/bin/protoc-gen-grpc-web"
-----
-====
-
 You don't have to install `protoc` or the protoc plugins like vertx-grpc-protoc-plugin2, protobuf-javascript and protoc-gen-grpc-web as they will be managed by a Maven plugin.
 
 == Create the project
