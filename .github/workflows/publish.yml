@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '30 0 * * *'  # Run 30 minutes after the build workflow
 
+env:
+  JAVA_VERSION: '17'
+  MAVEN_VERSION: '3.9.5'
+  MAVEN_OPTS: '-Xmx3072m'
+
 permissions:
   contents: read
   pages: write
@@ -29,11 +34,22 @@ jobs:
           name: build-artifacts-ubuntu-latest
           path: target/
 
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        if: ${{ github.event_name == 'schedule' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Download artifacts fallback
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          mvn -B clean install
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.1'
-          bundler-cache: true
 
       - name: Install Jekyll dependencies
         run: |
