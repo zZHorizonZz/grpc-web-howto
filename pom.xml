@@ -10,7 +10,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <vertx.version>5.0.0.CR8</vertx.version>
+    <vertx.version>5.0.0</vertx.version>
     <grpc.version>1.65.1</grpc.version>
     <protoc.version>4.29.3</protoc.version>
     <protobuf.version>4.29.3</protobuf.version>
@@ -37,11 +37,6 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-grpc-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-codegen-api</artifactId>
-      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -73,7 +68,7 @@
       <plugin>
         <groupId>io.github.ascopes</groupId>
         <artifactId>protobuf-maven-plugin</artifactId>
-        <version>2.13.1</version>
+        <version>3.2.0</version>
         <configuration>
           <protocVersion>4.29.3</protocVersion>
           <sourceDirectories>src/main/proto</sourceDirectories>
@@ -95,6 +90,7 @@
                     <jvmArg>--grpc-client=false</jvmArg>
                     <jvmArg>--grpc-service</jvmArg>
                     <jvmArg>--service-prefix=Vertx</jvmArg>
+                    <jvmArg>--vertx-codegen=false</jvmArg>
                   </jvmArgs>
                 </jvmMavenPlugin>
               </jvmMavenPlugins>
@@ -107,12 +103,12 @@
             <id>compile-javascript</id>
             <configuration>
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
-              <binaryPathPlugins>
-                <binaryPathPlugin>
-                  <name>protoc-gen-js</name>
+              <binaryUrlPlugins>
+                <binaryUrlPlugin>
+                  <url>${protoc.gen.js.url}</url>
                   <options>import_style=commonjs</options>
-                </binaryPathPlugin>
-              </binaryPathPlugins>
+                </binaryUrlPlugin>
+              </binaryUrlPlugins>
             </configuration>
             <goals>
               <goal>generate</goal>
@@ -122,12 +118,12 @@
             <id>compile-javascript-web</id>
             <configuration>
               <outputDirectory>${project.basedir}/src/main/web</outputDirectory>
-              <binaryPathPlugins>
-                <binaryPathPlugin>
-                  <name>protoc-gen-grpc-web</name>
-                  <options>import_style=commonjs,mode=grpcwebtext</options>
-                </binaryPathPlugin>
-              </binaryPathPlugins>
+              <binaryUrlPlugins>
+                <binaryUrlPlugin>
+                  <url>${protoc.gen.grpc.web.url}</url>
+                  <options>import_style=typescript,mode=grpcwebtext</options>
+                </binaryUrlPlugin>
+              </binaryUrlPlugins>
             </configuration>
             <goals>
               <goal>generate</goal>
@@ -185,5 +181,44 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <protoc.gen.js.url>zip:https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-win64.zip!/protobuf-javascript-3.21.4-win64/bin/protoc-gen-js.exe</protoc.gen.js.url>
+        <protoc.gen.grpc.web.url>https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-windows-x86_64.exe</protoc.gen.grpc.web.url>
+      </properties>
+    </profile>
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <protoc.gen.js.url>zip:https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.zip!/bin/protoc-gen-js</protoc.gen.js.url>
+        <protoc.gen.grpc.web.url>https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-x86_64</protoc.gen.grpc.web.url>
+      </properties>
+    </profile>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <protoc.gen.js.url>zip:https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-osx-x86_64.zip!/bin/protoc-gen-js</protoc.gen.js.url>
+        <protoc.gen.grpc.web.url>https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-darwin-x86_64</protoc.gen.grpc.web.url>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

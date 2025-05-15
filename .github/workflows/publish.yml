@@ -1,11 +1,12 @@
-name: Publish the how-to
+name: Publish Documentation
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["Build Project"]
+    branches: [master]
+    types: [completed]
   schedule:
-    - cron:  '0 0 * * *'
+    - cron: '30 0 * * *'  # Run 30 minutes after the build workflow
 
 permissions:
   contents: read
@@ -13,34 +14,46 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  publish:
+    name: Generate and publish documentation
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Run builds
-        run: |
-          mkdir --parents "$HOME/.local/bin"
-          curl -sL https://github.com/protocolbuffers/protobuf-javascript/releases/download/v3.21.4/protobuf-javascript-3.21.4-linux-x86_64.tar.gz | tar xzfO - bin/protoc-gen-js > "$HOME/.local/bin/protoc-gen-js"
-          chmod u+x "$HOME/.local/bin/protoc-gen-js"
-          curl -sL https://github.com/grpc/grpc-web/releases/download/1.5.0/protoc-gen-grpc-web-1.5.0-linux-x86_64 > "$HOME/.local/bin/protoc-gen-grpc-web"
-          chmod u+x "$HOME/.local/bin/protoc-gen-grpc-web"
-          ./.run.builds.sh
+          name: build-artifacts-ubuntu-latest
+          path: target/
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.1'
-      - name: Run Jekyll and deploy
-        run: ./.run.jekyll.sh
-      - name: Setup Pages
+          bundler-cache: true
+
+      - name: Install Jekyll dependencies
+        run: |
+          echo "⚙️  Building with Jekyll"
+          gem install bundler
+          bundle install
+          bundle exec jekyll build
+          echo "✅ Done"
+
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v3
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site/
+          retention-days: 1
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000  # 10-minute timeout
