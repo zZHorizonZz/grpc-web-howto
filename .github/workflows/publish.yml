@@ -48,7 +48,7 @@ jobs:
       - name: Download artifacts fallback
         if: ${{ github.event_name == 'schedule' }}
         run: |
-          mvn -B clean install
+          ./.run.builds.sh
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
